@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -19,16 +20,33 @@ namespace ClipSupporter
         public string ClipDataFolderPath = String.Empty;
         const string DATATYPE_TEXT = "text";
         const string DATATYPE_BIN = "bin";
+        const string DATATYPE_BMP = "bmp";
         const string DATATYPE_FILE = "file";
+        const string DATATYPE_STR_ARRAY = "string[]";
+
         readonly string[][] ChoiceFormatPriorities = {
-            new string[]{DataFormats.FileDrop, DATATYPE_FILE },
-            new string[]{DataFormats.EnhancedMetafile, DATATYPE_TEXT },
-            new string[]{DataFormats.OemText, DATATYPE_TEXT },
-            new string[]{DataFormats.Html, DATATYPE_TEXT },
-            new string[]{DataFormats.Bitmap, DATATYPE_BIN },
+            new string[]{DataFormats.StringFormat, DATATYPE_TEXT },
             new string[]{DataFormats.UnicodeText, DATATYPE_TEXT },
-            new string[]{DataFormats.CommaSeparatedValue, DATATYPE_TEXT },
             new string[]{DataFormats.Text, DATATYPE_TEXT },
+            new string[]{"SAKURAClipW", DATATYPE_BIN },
+            new string[]{DataFormats.Locale, DATATYPE_BIN },
+            new string[]{DataFormats.OemText, DATATYPE_TEXT },
+
+            //new string[]{ "Shell IDList Array", DATATYPE_BIN },
+            //new string[]{ "DataObjectAttributes", DATATYPE_BIN },
+            //new string[]{ "DataObjectAttributesRequiringElevation", DATATYPE_BIN },
+            //new string[]{ "Shell Object Offsets", DATATYPE_BIN },
+            //new string[]{ "Preferred DropEffect", DATATYPE_BIN },
+            //new string[]{ "AsyncFlag", DATATYPE_BIN },
+
+            new string[]{DataFormats.FileDrop, DATATYPE_FILE },
+            //new string[]{"FileNameW", DATATYPE_STR_ARRAY },
+            //new string[]{"FileName", DATATYPE_STR_ARRAY },
+
+            new string[]{DataFormats.EnhancedMetafile, DATATYPE_TEXT },
+            new string[]{DataFormats.Html, DATATYPE_TEXT },
+            new string[]{DataFormats.Bitmap, DATATYPE_BMP },
+            new string[]{DataFormats.CommaSeparatedValue, DATATYPE_TEXT },
         };
         enum DataSaveType
         {
@@ -54,99 +72,103 @@ namespace ClipSupporter
         private void Button1_Click(object sender, EventArgs e)
         {
             var dataObj = Clipboard.GetDataObject();
-            if (dataObj == null) return;
-
-            string dataType = string.Empty;
-            string dataFormat = ChoiceFormat(dataObj.GetFormats(), ref dataType);
-            if (dataFormat == string.Empty) return;
+            if (dataObj == null || dataObj.GetFormats().Length <= 0) return;
 
             // clear folder amd children files
             ClearDataDirectory();
 
-            //MessageBox.Show(dataFormat + "\r\n" + dataObj.GetData(dataFormat));
-            Console.WriteLine(dataFormat + "\r\n" + dataObj.GetData(dataFormat));
-            string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
-
             this.Text = "Save中...";
-            // Formatに合わせて保存
-            switch (dataType)
+            string[] formats = dataObj.GetFormats();
+            foreach (var f in formats)
             {
-                case DATATYPE_BIN:
-                    var img = Clipboard.GetImage();
-                    img.Save(outputFilePath);
-                    break;
-                case DATATYPE_FILE:
-                    if (!CopyDropFile((string[])dataObj.GetData(dataFormat)))
-                    {
-                        notifyIcon1.ShowBalloonTip(1000, "エラー", $"ファイルコピーに失敗しました。", ToolTipIcon.Info);
-                        ClearDataDirectory();
-                    }
-                    break;
-                case DATATYPE_TEXT:
-                    using (var sw = new StreamWriter(outputFilePath))
-                    {
-                        sw.Write(dataObj.GetData(dataFormat));
-                    }
-                    break;
-                default:
-                    notifyIcon1.ShowBalloonTip(1000, "情報", $"コピーしているデータには対応しておりません。{dataFormat}", ToolTipIcon.Info);
-                    return;
+                Debug.WriteLine(f+"\t\t\t\t\t"+dataObj.GetData(f));
+            }
+            foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => formats.Contains(f[0])))
+            {
+                string dataFormat = targetFormats[0];
+                string dataType = targetFormats[1];
+                string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
+
+                // Formatに合わせて保存
+                switch (dataType)
+                {
+                    case DATATYPE_BMP:
+                        var img = Clipboard.GetImage();
+                        img.Save(outputFilePath);
+                        break;
+                    case DATATYPE_BIN:
+                        var ms = (MemoryStream)dataObj.GetData(dataFormat);
+                        File.WriteAllBytes(outputFilePath, ms.ToArray());
+                        break;
+                    case DATATYPE_FILE:
+                        Directory.CreateDirectory(outputFilePath);
+                        foreach (var path in (string[])dataObj.GetData(dataFormat))
+                        {
+                            CopyAndReplace(path, outputFilePath);
+                        }
+                        break;
+                    case DATATYPE_STR_ARRAY:
+                        using (var sw = new StreamWriter(outputFilePath))
+                        {
+                            sw.Write(String.Join("\r\n", (string[])dataObj.GetData(dataFormat)));
+                        }
+                        break;
+                    case DATATYPE_TEXT:
+                        using (var sw = new StreamWriter(outputFilePath))
+                        {
+                            sw.Write(dataObj.GetData(dataFormat));
+                        }
+                        break;
+                }
             }
             this.Text = "ClipSupporter";
 
             // 動作確認の為、クリア
-            // Clipboard.Clear();
+            Clipboard.Clear();
         }
 
         private void Button2_Click(object sender, EventArgs e)
         {
             var inputFileList = Directory.EnumerateFileSystemEntries(ClipDataFolderPath).ToArray();
-            string dataFormat = string.Empty;
-            string dataType = string.Empty;
-            if (inputFileList.Length > 1 
-                || (dataFormat = ChoiceFormat(inputFileList.Select(f => Path.GetFileName(f)).ToArray()
-                                             , ref dataType)) == string.Empty)
+            if (inputFileList.Length <= 0) return;
+
+            Clipboard.Clear();
+            foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => inputFileList.Select(fl => Path.GetFileName(fl)).Contains(f[0])))
             {
-                // Fileコピーの場合
-                Clipboard.SetData(DataFormats.FileDrop, inputFileList);
-            }
-            else
-            {
+                string dataFormat = targetFormats[0];
+                string dataType = targetFormats[1];
+                string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
+
                 switch (dataType)
                 {
+                    case DATATYPE_FILE:
+                        Clipboard.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
+                        break;
                     case DATATYPE_BIN:
-                        using (var ms = new MemoryStream(File.ReadAllBytes(inputFileList[0])))
+                        byte[] data = File.ReadAllBytes(outputFilePath);
+                        Clipboard.SetData(dataFormat, data);
+                        break;
+                    case DATATYPE_BMP:
+                        using (var ms = new MemoryStream(File.ReadAllBytes(outputFilePath)))
                         {
                             Bitmap bmp = new Bitmap(ms);
                             Clipboard.SetData(dataFormat, bmp);
                         }
                         break;
+                    case DATATYPE_STR_ARRAY:
+                        using (var sr = new StreamReader(outputFilePath))
+                        {
+                            Clipboard.SetData(dataFormat, sr.ReadToEnd().Split(new string[]{"\r\n"}, StringSplitOptions.None));
+                        }
+                        break;
                     case DATATYPE_TEXT:
-                        using (var sr = new StreamReader(inputFileList[0]))
+                        using (var sr = new StreamReader(outputFilePath))
                         {
                             Clipboard.SetData(dataFormat, sr.ReadToEnd());
                         }
                         break;
-                    default:
-                        break;
-                }
-
-            }
-        }
-
-        private string ChoiceFormat(string[] formats, ref string dataType)
-        {
-            foreach (var fmt in formats)
-            {
-                if (ChoiceFormatPriorities.Any(f => f[0] == fmt))
-                {
-                    var hitFormat = ChoiceFormatPriorities.Where(f => f[0] == fmt).First();
-                    dataType = hitFormat[1];
-                    return hitFormat[0];
                 }
             }
-
-            return string.Empty;
         }
 
         private void ClearDataDirectory()
@@ -162,50 +184,25 @@ namespace ClipSupporter
             }
         }
 
-        private bool CopyDropFile(string[] dropFileArray)
-        {
-            foreach (var path in dropFileArray)
-            {
-                //ファイルをコピー
-                if (File.Exists(path))
-                {
-                    File.Copy(path, Path.Combine(ClipDataFolderPath, Path.GetFileName(path)));
-                }
-                else
-                {
-                    CopyAndReplace(path, Path.Combine(ClipDataFolderPath, Path.GetFileName(path)));
-                }
-            }
-
-            if (Directory.EnumerateFileSystemEntries(ClipDataFolderPath).Count()
-                == dropFileArray.Length)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
         /// <summary>
         /// ディレクトリとその中身を上書きコピー
         /// </summary>
         public void CopyAndReplace(string sourcePath, string copyPath)
         {
-            Directory.CreateDirectory(copyPath);
-
-            //ファイルをコピー
-            foreach (var file in Directory.GetFiles(sourcePath))
+            // ファイルのコピー
+            if (File.Exists(sourcePath))
             {
-                File.Copy(file, Path.Combine(copyPath, Path.GetFileName(file)));
+                File.Copy(sourcePath, Path.Combine(copyPath, Path.GetFileName(sourcePath)));
             }
-
-            //ディレクトリの中のディレクトリも再帰的にコピー
-            foreach (var dir in Directory.GetDirectories(sourcePath))
+            else
             {
-                CopyAndReplace(dir, Path.Combine(copyPath, Path.GetFileName(dir)));
+                // ディレクトリ内エントリのコピー
+                string targetPath = Path.Combine(copyPath, Path.GetFileName(sourcePath));
+                Directory.CreateDirectory(targetPath);
+                foreach (var path in Directory.EnumerateFileSystemEntries(sourcePath))
+                {
+                    CopyAndReplace(Path.Combine(sourcePath, path), targetPath);
+                }
             }
         }
     }
