@@ -33,9 +33,9 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageKC = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPageCalc = new System.Windows.Forms.TabPage();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPageKC.SuspendLayout();
             this.SuspendLayout();
@@ -61,7 +61,6 @@
             // 
             // tabPageKC
             // 
-            this.tabPageKC.Controls.Add(this.button2);
             this.tabPageKC.Controls.Add(this.button1);
             this.tabPageKC.Location = new System.Drawing.Point(4, 22);
             this.tabPageKC.Name = "tabPageKC";
@@ -71,21 +70,11 @@
             this.tabPageKC.Text = "KC";
             this.tabPageKC.UseVisualStyleBackColor = true;
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(114, 6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(102, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "load";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(6, 6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(102, 23);
+            this.button1.Size = new System.Drawing.Size(220, 23);
             this.button1.TabIndex = 0;
             this.button1.Text = "save";
             this.button1.UseVisualStyleBackColor = true;
@@ -100,6 +89,11 @@
             this.tabPageCalc.TabIndex = 1;
             this.tabPageCalc.Text = "Calc";
             this.tabPageCalc.UseVisualStyleBackColor = true;
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // ClipSupporterForm
             // 
@@ -124,9 +118,9 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageKC;
         private System.Windows.Forms.TabPage tabPageCalc;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         public System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

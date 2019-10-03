@@ -24,8 +24,11 @@ namespace ClipSupporter
         const string DATATYPE_FILE = "file";
         const string DATATYPE_STR_ARRAY = "string[]";
 
+        public DateTime LastLoadTime { get; set; }
+
         readonly string[][] ChoiceFormatPriorities = {
-            new string[]{DataFormats.StringFormat, DATATYPE_TEXT },
+            new string[]{"mmatsubara_A5M2_GRIDDATA", DATATYPE_BIN },
+             new string[]{DataFormats.StringFormat, DATATYPE_TEXT },
             new string[]{DataFormats.UnicodeText, DATATYPE_TEXT },
             new string[]{DataFormats.Text, DATATYPE_TEXT },
             new string[]{"SAKURAClipW", DATATYPE_BIN },
@@ -63,9 +66,33 @@ namespace ClipSupporter
             ClipDataFolderPath = Path.Combine(ConfigurationManager.AppSettings["BasePath"]
                 , ConfigurationManager.AppSettings["AppName"]);
 
+            // フォームデザインの設定
+            switch (ConfigurationManager.AppSettings["FormDesignPattern"])
+            {
+                case "system":
+                    this.BackColor = Color.Gray;
+                    break;
+                case "blue":
+                    this.BackColor = Color.Blue;
+                    break;
+                case "yellow":
+                    this.BackColor = Color.Yellow;
+                    break;
+                case "green":
+                    this.BackColor = Color.Green;
+                    break;
+                default:
+                    MessageBox.Show($"起動に失敗しました。FormDesignPattern={ConfigurationManager.AppSettings["FormDesignPattern"]}");
+                    break;
+            }
+
             Directory.CreateDirectory(ClipDataFolderPath);
             // clear folder and children files
             ClearDataDirectory();
+
+            LastLoadTime = DateTime.Now;
+
+            timer1.Enabled = true;
 
         }
 
@@ -125,50 +152,9 @@ namespace ClipSupporter
 
             // 動作確認の為、クリア
             Clipboard.Clear();
-        }
 
-        private void Button2_Click(object sender, EventArgs e)
-        {
-            var inputFileList = Directory.EnumerateFileSystemEntries(ClipDataFolderPath).ToArray();
-            if (inputFileList.Length <= 0) return;
+            LastLoadTime = DateTime.Now;
 
-            Clipboard.Clear();
-            foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => inputFileList.Select(fl => Path.GetFileName(fl)).Contains(f[0])))
-            {
-                string dataFormat = targetFormats[0];
-                string dataType = targetFormats[1];
-                string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
-
-                switch (dataType)
-                {
-                    case DATATYPE_FILE:
-                        Clipboard.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
-                        break;
-                    case DATATYPE_BIN:
-                        byte[] data = File.ReadAllBytes(outputFilePath);
-                        Clipboard.SetData(dataFormat, data);
-                        break;
-                    case DATATYPE_BMP:
-                        using (var ms = new MemoryStream(File.ReadAllBytes(outputFilePath)))
-                        {
-                            Bitmap bmp = new Bitmap(ms);
-                            Clipboard.SetData(dataFormat, bmp);
-                        }
-                        break;
-                    case DATATYPE_STR_ARRAY:
-                        using (var sr = new StreamReader(outputFilePath))
-                        {
-                            Clipboard.SetData(dataFormat, sr.ReadToEnd().Split(new string[]{"\r\n"}, StringSplitOptions.None));
-                        }
-                        break;
-                    case DATATYPE_TEXT:
-                        using (var sr = new StreamReader(outputFilePath))
-                        {
-                            Clipboard.SetData(dataFormat, sr.ReadToEnd());
-                        }
-                        break;
-                }
-            }
         }
 
         private void ClearDataDirectory()
@@ -204,6 +190,55 @@ namespace ClipSupporter
                     CopyAndReplace(Path.Combine(sourcePath, path), targetPath);
                 }
             }
+        }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            // Saveファイルの有無チェック
+            var inputFileList = Directory.EnumerateFileSystemEntries(ClipDataFolderPath).ToArray();
+            if (inputFileList.Length <= 0) return;
+
+            var saveFileCreateTime = inputFileList.Max(f => File.GetLastWriteTime(f));
+            if (DateTime.Compare(LastLoadTime, saveFileCreateTime) >= 0) return;
+
+            Clipboard.Clear();
+            foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => inputFileList.Select(fl => Path.GetFileName(fl)).Contains(f[0])))
+            {
+                string dataFormat = targetFormats[0];
+                string dataType = targetFormats[1];
+                string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
+
+                switch (dataType)
+                {
+                    case DATATYPE_FILE:
+                        Clipboard.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
+                        break;
+                    case DATATYPE_BIN:
+                        byte[] data = File.ReadAllBytes(outputFilePath);
+                        Clipboard.SetData(dataFormat, data);
+                        break;
+                    case DATATYPE_BMP:
+                        using (var ms = new MemoryStream(File.ReadAllBytes(outputFilePath)))
+                        {
+                            Bitmap bmp = new Bitmap(ms);
+                            Clipboard.SetData(dataFormat, bmp);
+                        }
+                        break;
+                    case DATATYPE_STR_ARRAY:
+                        using (var sr = new StreamReader(outputFilePath))
+                        {
+                            Clipboard.SetData(dataFormat, sr.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.None));
+                        }
+                        break;
+                    case DATATYPE_TEXT:
+                        using (var sr = new StreamReader(outputFilePath))
+                        {
+                            Clipboard.SetData(dataFormat, sr.ReadToEnd());
+                        }
+                        break;
+                }
+            }
+            LastLoadTime = DateTime.Now;
         }
     }
 }
