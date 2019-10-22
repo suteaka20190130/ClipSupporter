@@ -51,6 +51,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Panel\BladePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Panel\BladePanel.Designer.cs">
+      <DependentUpon>BladePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ClipSupporterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,10 +66,33 @@
     <Compile Include="Controls\BasePanel.xaml.cs">
       <DependentUpon>BasePanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Panel\ButtonPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Panel\ButtonPanel.Designer.cs">
+      <DependentUpon>ButtonPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Panel\ButtonPanelConfig.cs" />
+    <Compile Include="Panel\DesignSample\SamplePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Panel\DesignSample\SamplePanel.Designer.cs">
+      <DependentUpon>SamplePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Panel\PanelConfig.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Panel\BladePanel.resx">
+      <DependentUpon>BladePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ClipSupporterForm.resx">
       <DependentUpon>ClipSupporterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Panel\ButtonPanel.resx">
+      <DependentUpon>ButtonPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Panel\DesignSample\SamplePanel.resx">
+      <DependentUpon>SamplePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -90,9 +119,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="KCPanal\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Controls\BasePanel.xaml">
       <SubType>Designer</SubType>
