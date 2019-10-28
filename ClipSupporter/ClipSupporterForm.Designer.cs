@@ -35,7 +35,8 @@
             this.tabPageKC = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPageCalc = new System.Windows.Forms.TabPage();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.samplePanel2 = new ClipSupporter.Panel.DesignSample.SamplePanel();
+            this.PanelArea = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMostToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,8 +48,6 @@
             this.GreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.samplePanel2 = new ClipSupporter.Panel.DesignSample.SamplePanel();
-            this.PanelArea = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPageKC.SuspendLayout();
             this.tabPageCalc.SuspendLayout();
@@ -106,6 +105,21 @@
             this.tabPageCalc.TabIndex = 1;
             this.tabPageCalc.Text = "Calc";
             this.tabPageCalc.UseVisualStyleBackColor = true;
+            // 
+            // samplePanel2
+            // 
+            this.samplePanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.samplePanel2.Location = new System.Drawing.Point(6, 6);
+            this.samplePanel2.Name = "samplePanel2";
+            this.samplePanel2.Size = new System.Drawing.Size(200, 50);
+            this.samplePanel2.TabIndex = 1;
+            // 
+            // PanelArea
+            // 
+            this.PanelArea.Location = new System.Drawing.Point(5, 5);
+            this.PanelArea.Name = "PanelArea";
+            this.PanelArea.Size = new System.Drawing.Size(200, 300);
+            this.PanelArea.TabIndex = 2;
             // 
             // menuStrip1
             // 
@@ -197,21 +211,6 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // samplePanel2
-            // 
-            this.samplePanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.samplePanel2.Location = new System.Drawing.Point(6, 6);
-            this.samplePanel2.Name = "samplePanel2";
-            this.samplePanel2.Size = new System.Drawing.Size(200, 50);
-            this.samplePanel2.TabIndex = 1;
-            // 
-            // PanelArea
-            // 
-            this.PanelArea.Location = new System.Drawing.Point(5, 5);
-            this.PanelArea.Name = "PanelArea";
-            this.PanelArea.Size = new System.Drawing.Size(200, 300);
-            this.PanelArea.TabIndex = 2;
-            // 
             // ClipSupporterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -220,6 +219,7 @@
             this.ClientSize = new System.Drawing.Size(231, 371);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "ClipSupporterForm";
@@ -244,7 +244,6 @@
         private System.Windows.Forms.TabPage tabPageCalc;
         private System.Windows.Forms.Button button1;
         public System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 設定ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem topMostToolStripMenuItem;
