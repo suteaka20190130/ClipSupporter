@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClipSupporter", "ClipSuppor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "CommonLibrary\CommonLibrary.csproj", "{FCDE42DA-C603-435C-A6F2-44866C0035FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionLibraryBP", "FunctionLibraryBP\FunctionLibraryBP.csproj", "{3B76F210-8FE3-4215-9426-E13D4DBADA47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FCDE42DA-C603-435C-A6F2-44866C0035FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCDE42DA-C603-435C-A6F2-44866C0035FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCDE42DA-C603-435C-A6F2-44866C0035FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B76F210-8FE3-4215-9426-E13D4DBADA47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B76F210-8FE3-4215-9426-E13D4DBADA47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B76F210-8FE3-4215-9426-E13D4DBADA47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B76F210-8FE3-4215-9426-E13D4DBADA47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
