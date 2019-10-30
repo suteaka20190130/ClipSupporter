@@ -57,9 +57,9 @@ namespace FunctionLibraryBP
 
         public ClipSharing()
         {
-            Directory.CreateDirectory(ClipDataFolderPath);
+            //Directory.CreateDirectory(ClipDataFolderPath);
             // clear folder and children files
-            FileControler.ClearDataDirectory(ClipDataFolderPath);
+            //FileControler.ClearDataDirectory(ClipDataFolderPath);
 
             CopyPollingTimer = new Timer();
             CopyPollingTimer.Interval = 2000;
@@ -69,7 +69,7 @@ namespace FunctionLibraryBP
             LastLoadTime = DateTime.Now;
         }
 
-        private void PollingTimer_Tick(object sender, EventArgs e)
+        public void PollingTimer_Tick(object sender, EventArgs e)
         {
             // Saveファイルの有無チェック
             var inputFileList = Directory.EnumerateFileSystemEntries(ClipDataFolderPath).ToArray();
@@ -118,7 +118,7 @@ namespace FunctionLibraryBP
             LastLoadTime = DateTime.Now;
         }
 
-        public void SaveClipBoard()
+        public void SaveClipBoard(object sender, EventArgs e)
         {
             //
             FileControler.ClearDataDirectory(ClipDataFolderPath);

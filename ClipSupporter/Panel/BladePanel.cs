@@ -12,6 +12,8 @@ namespace ClipSupporter
 {
     public partial class BladePanel : UserControl
     {
+        public object MainInstance { get; set; }
+
         public BladePanel()
         {
             InitializeComponent();

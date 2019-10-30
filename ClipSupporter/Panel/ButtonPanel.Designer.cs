@@ -41,7 +41,7 @@
             // ButtonPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.ButtonArea);
             this.Name = "ButtonPanel";
             this.Size = new System.Drawing.Size(200, 50);

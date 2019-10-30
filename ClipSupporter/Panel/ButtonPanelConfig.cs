@@ -8,5 +8,11 @@ namespace ClipSupporter.Panel
 {
     public class ButtonPanelConfig : PanelConfig
     {
+        // 7まで
+        public int ButtonCntX { get; set; }
+        // 1のみ
+        public int ButtonCntY { get; set; }
+
+            
     }
 }

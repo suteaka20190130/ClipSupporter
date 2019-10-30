@@ -119,7 +119,12 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\FunctionLibraryBP\FunctionLibraryBP.csproj">
+      <Project>{3B76F210-8FE3-4215-9426-E13D4DBADA47}</Project>
+      <Name>FunctionLibraryBP</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\BasePanel.xaml">
       <SubType>Designer</SubType>

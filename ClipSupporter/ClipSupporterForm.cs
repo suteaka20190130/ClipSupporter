@@ -60,7 +60,7 @@ namespace ClipSupporter
                     GrayToolStripMenuItem.Checked = true;
                     break;
                 case "Blue":
-                    this.BackColor = Color.Blue;
+                    this.BackColor = SystemColors.ActiveCaption;
                     BlueToolStripMenuItem.Checked = true;
                     break;
                 case "White":
@@ -68,11 +68,11 @@ namespace ClipSupporter
                     WhiteToolStripMenuItem.Checked = true;
                     break;
                 case "Green":
-                    this.BackColor = Color.Green;
+                    this.BackColor = Color.PaleGreen;
                     GreenToolStripMenuItem.Checked = true;
                     break;
                 case "Red":
-                    this.BackColor = Color.Red;
+                    this.BackColor = Color.LightPink;
                     RedToolStripMenuItem.Checked = true;
                     break;
                 default:
@@ -112,9 +112,14 @@ namespace ClipSupporter
                 tabControl1.TabPages[1].Controls.RemoveAt(i);
             }
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
-                ButtonPanel pnl = new ButtonPanel();
+                var cfg = new ButtonPanelConfig();
+                cfg.TitleName = $"ClipSharing{i}";
+                cfg.ButtonCntX = new int[]{ 1, 7, 8, 3}[i];
+                cfg.ButtonCntY = new int[]{ 1, 1, 1, 3}[i];
+
+                ButtonPanel pnl = new ButtonPanel(cfg);
                 pnl.TitleLabel.Text = $"機能{i}";
                 pnl.Location = new Point(0, i * 50);
                 PanelArea.Controls.Add(pnl);
