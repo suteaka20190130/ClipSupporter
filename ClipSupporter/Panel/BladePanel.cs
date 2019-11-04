@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClipSupporter.Panel;
 
 namespace ClipSupporter
 {
@@ -14,10 +15,18 @@ namespace ClipSupporter
     {
         public object MainInstance { get; set; }
 
+        public string PanelBasePath { get; set; }
+
         public BladePanel()
         {
-            InitializeComponent();
 
+        }
+
+        public BladePanel(PanelConfig cfg)
+        {
+            InitializeComponent();
+            this.TitleLabel.Text = cfg.TitleName;
+            this.PanelBasePath = cfg.PanelBasePath;
 #if DEBUG
             TitleLabel.Click += new EventHandler(TitleLabel_Click);
 #endif

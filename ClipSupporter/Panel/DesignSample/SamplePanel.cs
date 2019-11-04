@@ -10,7 +10,11 @@ namespace ClipSupporter.Panel.DesignSample
 {
     public partial class SamplePanel : ClipSupporter.BladePanel
     {
-        public SamplePanel()
+        public SamplePanel() : base()
+        {
+
+        }
+        public SamplePanel(PanelConfig cfg) : base(cfg)
         {
             InitializeComponent();
         }

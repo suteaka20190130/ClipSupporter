@@ -13,6 +13,8 @@ namespace ClipSupporter.Panel
         /// </summary>
         public string TitleName { get; set; }
 
+        public string PanelBasePath { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>

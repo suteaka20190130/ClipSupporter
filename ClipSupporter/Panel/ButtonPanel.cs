@@ -11,7 +11,7 @@ namespace ClipSupporter.Panel
 {
     public partial class ButtonPanel : ClipSupporter.BladePanel
     {
-        public ButtonPanel(ButtonPanelConfig cfg)
+        public ButtonPanel(ButtonPanelConfig cfg) : base(cfg)
         {
             InitializeComponent();
 
@@ -38,12 +38,15 @@ namespace ClipSupporter.Panel
                     btn.Left = btnLeft;
                     btn.Top = btnTop;
 
-                    btn.Text = (btnNumber - 1).ToString();
+                    btn.Text = "実行";
                     var tp = new ToolTip();
                     tp.SetToolTip(btn, $"aaaaaa{btnNumber - 1}");
 
-                    this.MainInstance = new ClipSharing();
-                    btn.Click += new EventHandler(((ClipSharing)MainInstance).SaveClipBoard);
+                    //this.MainInstance = new ClipSharing();
+                    //btn.Click += new EventHandler(((ClipSharing)MainInstance).SaveClipBoard);
+
+                    this.MainInstance = new CreateInsertSQL();
+                    btn.Click += new EventHandler(((CreateInsertSQL)MainInstance).SaveClipBoard);
 
                     this.Controls.Add(btn);
                 }

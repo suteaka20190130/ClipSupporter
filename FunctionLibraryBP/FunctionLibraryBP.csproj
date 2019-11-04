@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseFunctionClass.cs" />
+    <Compile Include="CreateInsertSQL.cs" />
     <Compile Include="ClipSharing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

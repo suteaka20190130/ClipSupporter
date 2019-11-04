@@ -33,10 +33,7 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageKC = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabPageCalc = new System.Windows.Forms.TabPage();
-            this.samplePanel2 = new ClipSupporter.Panel.DesignSample.SamplePanel();
-            this.PanelArea = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMostToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,9 +45,9 @@
             this.GreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.PanelArea = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPageKC.SuspendLayout();
-            this.tabPageCalc.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +72,7 @@
             // 
             // tabPageKC
             // 
-            this.tabPageKC.Controls.Add(this.button1);
+            this.tabPageKC.Controls.Add(this.PanelArea);
             this.tabPageKC.Location = new System.Drawing.Point(4, 22);
             this.tabPageKC.Name = "tabPageKC";
             this.tabPageKC.Padding = new System.Windows.Forms.Padding(3);
@@ -84,20 +81,8 @@
             this.tabPageKC.Text = "業務";
             this.tabPageKC.UseVisualStyleBackColor = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(6, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(200, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "save";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
-            // 
             // tabPageCalc
             // 
-            this.tabPageCalc.Controls.Add(this.samplePanel2);
-            this.tabPageCalc.Controls.Add(this.PanelArea);
             this.tabPageCalc.Location = new System.Drawing.Point(4, 22);
             this.tabPageCalc.Name = "tabPageCalc";
             this.tabPageCalc.Padding = new System.Windows.Forms.Padding(3);
@@ -105,21 +90,6 @@
             this.tabPageCalc.TabIndex = 1;
             this.tabPageCalc.Text = "Calc";
             this.tabPageCalc.UseVisualStyleBackColor = true;
-            // 
-            // samplePanel2
-            // 
-            this.samplePanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.samplePanel2.Location = new System.Drawing.Point(6, 6);
-            this.samplePanel2.Name = "samplePanel2";
-            this.samplePanel2.Size = new System.Drawing.Size(200, 50);
-            this.samplePanel2.TabIndex = 1;
-            // 
-            // PanelArea
-            // 
-            this.PanelArea.Location = new System.Drawing.Point(5, 5);
-            this.PanelArea.Name = "PanelArea";
-            this.PanelArea.Size = new System.Drawing.Size(200, 300);
-            this.PanelArea.TabIndex = 2;
             // 
             // menuStrip1
             // 
@@ -211,6 +181,13 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // PanelArea
+            // 
+            this.PanelArea.Location = new System.Drawing.Point(5, 3);
+            this.PanelArea.Name = "PanelArea";
+            this.PanelArea.Size = new System.Drawing.Size(200, 300);
+            this.PanelArea.TabIndex = 3;
+            // 
             // ClipSupporterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -230,7 +207,6 @@
             this.Load += new System.EventHandler(this.ClipSupporterForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPageKC.ResumeLayout(false);
-            this.tabPageCalc.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -242,7 +218,6 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageKC;
         private System.Windows.Forms.TabPage tabPageCalc;
-        private System.Windows.Forms.Button button1;
         public System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 設定ToolStripMenuItem;
@@ -255,7 +230,6 @@
         private System.Windows.Forms.ToolStripMenuItem GreenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 終了ToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private Panel.DesignSample.SamplePanel samplePanel2;
         private System.Windows.Forms.Panel PanelArea;
     }
 }

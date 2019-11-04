@@ -12,7 +12,6 @@ namespace ClipSupporter.Panel
         public int ButtonCntX { get; set; }
         // 1のみ
         public int ButtonCntY { get; set; }
-
-            
+ 
     }
 }

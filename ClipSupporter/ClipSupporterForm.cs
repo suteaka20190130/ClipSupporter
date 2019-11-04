@@ -102,31 +102,32 @@ namespace ClipSupporter
         private void ClipSupporterForm_Load(object sender, EventArgs e)
         {
             // SamplePanelの削除
-            int cntCount = tabControl1.TabPages[1].Controls.Count;
-            for (int i = cntCount-1; i >= 0; i--)
+            // Tabコントロールの生成
+            for (int tp = tabControl1.TabPages.Count -1; tp >= 0; tp--)
             {
-                if (tabControl1.TabPages[1].Controls[i].Name == "PanelArea")
+                int cntCount = tabControl1.TabPages[tp].Controls.Count;
+                for (int i = cntCount - 1; i >= 0; i--)
                 {
-                    continue;
+                    tabControl1.TabPages[tp].Controls.RemoveAt(i);
                 }
-                tabControl1.TabPages[1].Controls.RemoveAt(i);
             }
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var cfg = new ButtonPanelConfig();
-                cfg.TitleName = $"ClipSharing{i}";
-                cfg.ButtonCntX = new int[]{ 1, 7, 8, 3}[i];
-                cfg.ButtonCntY = new int[]{ 1, 1, 1, 3}[i];
+                cfg.TitleName = $"Insert文生成";
+                cfg.PanelBasePath = $"ClipSharing{i}";
+                cfg.ButtonCntX = new int[] { 1, 7, 8, 3 }[i];
+                cfg.ButtonCntY = new int[] { 1, 1, 1, 3 }[i];
 
                 ButtonPanel pnl = new ButtonPanel(cfg);
-                pnl.TitleLabel.Text = $"機能{i}";
-                pnl.Location = new Point(0, i * 50);
-                PanelArea.Controls.Add(pnl);
+                pnl.Location = new Point(5, (i * 50)+3);
+                //PanelArea.Controls.Add(pnl);
+                tabControl1.TabPages[0].Controls.Add(pnl);
                 //tabControl1.TabPages[1].Controls.Add(pnl);
             }
 
-            tabControl1.SelectedIndex = 1;
+            tabControl1.SelectedIndex = 0;
         }
     }
 }
