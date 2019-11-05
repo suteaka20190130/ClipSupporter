@@ -29,7 +29,7 @@ namespace FunctionLibraryBP
         {
             #region 暫定設定処理
             IsTrim = true;
-            NullString = "(NULL)";
+            NullString = "NULL";
             #endregion
 
             string inputData = Clipboard.GetText();
@@ -47,17 +47,19 @@ namespace FunctionLibraryBP
             if (tableData[0].Any(c => String.IsNullOrEmpty(c))) return;
             if (tableData.Count() <= 1) return;
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sbFormat = new StringBuilder();
             // header
-            sb.AppendLine("INSERT INTO");
-            sb.AppendLine("てーぶるめい");
-            sb.AppendLine("(" + String.Join(",", tableData[0]) + ")");
-            sb.AppendLine("VALUES");
+            sbFormat.Append("INSERT INTO ");
+            sbFormat.Append("てーぶるめい ");
+            sbFormat.Append("(" + String.Join(",", tableData[0]) + ") ");
+            sbFormat.Append("VALUES {0}");
 
             StringBuilder sbRecord = new StringBuilder();
             // record
             for (int y = 1; y < tableData.Count(); y++)
             {
+                if (tableData[y].Count() <= 1) return;
+
                 string recordData = string.Empty;
                 for (int x = 0; x < tableData[y].Count(); x++)
                 {
@@ -99,14 +101,11 @@ namespace FunctionLibraryBP
                         recordData += $",'{cellData}'";
                     }
                 }
-                sbRecord.AppendLine(",(" + recordData.Substring(1) + ")");
+                sbRecord.AppendLine(String.Format(sbFormat.ToString(), "(" + recordData.Substring(1) + ");"));
             }
 
-            sb.Append(sbRecord.ToString().Substring(1));
-            sb.AppendLine(";");
-
             Clipboard.Clear();
-            Clipboard.SetText(sb.ToString());
+            Clipboard.SetText(sbRecord.ToString());
         }
     }
 }
