@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using FunctionLibraryBP;
@@ -17,18 +18,18 @@ namespace ClipSupporter.Panel
 
             int areaLeft = ButtonArea.Left;
             int areaTop = ButtonArea.Top;
-            int btnWidth = ButtonArea.Width / cfg.ButtonCntX;
-            int btnHeight = ButtonArea.Height / cfg.ButtonCntY;
+            int btnWidth = ButtonArea.Width / cfg.ControlCntX;
+            int btnHeight = ButtonArea.Height / cfg.ControlCntY;
 
             this.Controls.Remove(ButtonArea);
 
             int btnNumber = 1;
             for (int y = 0, btnTop = areaTop
-                ;y < cfg.ButtonCntY
+                ;y < cfg.ControlCntY
                 ;y++, btnTop += btnHeight)
             {
                 for (int x = 0, btnLeft = areaLeft
-                    ; x < cfg.ButtonCntX
+                    ; x < cfg.ControlCntX
                     ; x++, btnLeft += btnWidth)
                 {
                     Button btn = new Button();
@@ -41,6 +42,11 @@ namespace ClipSupporter.Panel
                     btn.Text = "実行";
                     var tp = new ToolTip();
                     tp.SetToolTip(btn, $"aaaaaa{btnNumber - 1}");
+
+                    string asmpath = "FunctionLibraryBP.dll";
+                    Assembly assembly = Assembly.LoadFrom(asmpath);
+                    Type myType = assembly.GetType(cfg.InstanceName);
+                    MainInstance = Activator.CreateInstance(myType);
 
                     //this.MainInstance = new ClipSharing();
                     //btn.Click += new EventHandler(((ClipSharing)MainInstance).SaveClipBoard);

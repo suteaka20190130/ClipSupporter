@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClipSupporter.Panel;
+using System.Reflection;
 
 namespace ClipSupporter
 {
@@ -20,6 +21,7 @@ namespace ClipSupporter
     {
         public bool DisplayTopMost { get; set; }
         public string DesignColor { get; set; }
+        public string ApplicationBasePath { get; set; }
 
         /// <summary>
         /// constructor
@@ -37,6 +39,10 @@ namespace ClipSupporter
             //    , ConfigurationManager.AppSettings["AppName"]);
 
             //Directory.CreateDirectory(ClipDataFolderPath);
+            this.ApplicationBasePath = ConfigurationManager.AppSettings["ApplicationBasePath"];
+            this.Text = ConfigurationManager.AppSettings["ApplicationBaseTitle"];
+
+            var a = Config.PanelConfig.GetConfig();
         }
 
         private void LoadProperty()
@@ -49,6 +55,7 @@ namespace ClipSupporter
             // DesignColor
             DesignColor = (string)Properties.Settings.Default["DesignColor"];
             SetDesignColor(DesignColor);
+
         }
 
         private void SetDesignColor(string color)
@@ -112,19 +119,33 @@ namespace ClipSupporter
                 }
             }
 
+            int nowYPos = 3;
             for (int i = 0; i < 1; i++)
             {
                 var cfg = new ButtonPanelConfig();
                 cfg.TitleName = $"Insert文生成";
-                cfg.PanelBasePath = $"ClipSharing{i}";
-                cfg.ButtonCntX = new int[] { 1, 7, 8, 3 }[i];
-                cfg.ButtonCntY = new int[] { 1, 1, 1, 3 }[i];
+                cfg.PanelBasePath = Path.Combine(ApplicationBasePath, $"Panel{i}");
+                cfg.ControlCntX = new int[] { 1, 1, 8, 3 }[i];
+                cfg.ControlCntY = new int[] { 1, 1, 1, 3 }[i];
+
+                cfg.InstanceName = new string[]
+                {
+                    "FunctionLibraryBP.CreateInsertSQL"
+                  , "FunctionLibraryBP.ClipSharing"
+                }[i];
+
+                //cfg.Controls.AddRange(
+                //    new ButtonPanelConfig.PanelControl()
+                //    {
+                        
+                //    }
+                //    );
 
                 ButtonPanel pnl = new ButtonPanel(cfg);
-                pnl.Location = new Point(5, (i * 50)+3);
-                //PanelArea.Controls.Add(pnl);
+                pnl.Location = new Point(5, nowYPos);
+                nowYPos += cfg.ControlCntY * 50;
+
                 tabControl1.TabPages[0].Controls.Add(pnl);
-                //tabControl1.TabPages[1].Controls.Add(pnl);
             }
 
             tabControl1.SelectedIndex = 0;

@@ -74,7 +74,11 @@ namespace FunctionLibraryBP
                     {
                         if (IsTrim)
                         {
-                            cellData = cellData.Trim();
+                            // 全て空白はトリムしない
+                            if (!cellData.All(c => c == ' '))
+                            {
+                                cellData = cellData.Trim();
+                            }
                         }
                         if (cellData == tableData[y][x])
                         {
