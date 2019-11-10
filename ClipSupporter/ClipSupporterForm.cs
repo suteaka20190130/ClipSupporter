@@ -124,15 +124,22 @@ namespace ClipSupporter
                 }
             }
 
-            //var cfg = Config.PanelConfig.GetConfig();
-            foreach (var cfg in Config.PanelConfig.GetConfigs())
+            var cfg = Config.PanelConfig.GetConfig();
+            //foreach (var cfg in Config.PanelConfig.GetConfigs())
+            //{
+            //    if (cfg is Config.PanelConfig)
+            //    {
+            for (int i = 0; i < 1; i++)
             {
-                if (cfg is Config.PanelConfig)
-                {
-                    ButtonPanel pnl = new ButtonPanel((Config.PanelConfig)cfg);
-                    tabControl1.TabPages[0].Controls.Add(pnl);
-                }
+                int topPos = 3;
+                ButtonPanel pnl = new ButtonPanel((Config.PanelConfig)cfg);
+                pnl.Top = topPos;
+                pnl.Left = 3;
+                tabControl1.TabPages[0].Controls.Add(pnl);
+                topPos += pnl.Height;
             }
+            //    }
+            //}
 
             tabControl1.SelectedIndex = 0;
         }

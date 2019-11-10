@@ -27,8 +27,8 @@ namespace ClipSupporter.Panel
             AreaCellHeight = ButtonArea.Height / cfg.AreaYSize;
 
 #warning どうすれば
-            //Assembly assembly = Assembly.LoadFrom(cfg.AssemblyName);
-            Assembly assembly = typeof(FunctionLibraryBP.CreateInsertSQL).Assembly;
+            Assembly assembly = Assembly.LoadFrom(cfg.AssemblyName+".dll");
+            //Assembly assembly = typeof(FunctionLibraryBP.CreateInsertSQL).Assembly;
             Type myType = assembly.GetType(cfg.ClassName);
             MainInstance = Activator.CreateInstance(myType);
 
