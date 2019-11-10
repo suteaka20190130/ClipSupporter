@@ -12,53 +12,72 @@ namespace ClipSupporter.Panel
 {
     public partial class ButtonPanel : ClipSupporter.BladePanel
     {
-        public ButtonPanel(ButtonPanelConfig cfg) : base(cfg)
+        public int AreaLeft { get; set; }
+        public int AreaTop { get; set; }
+        public int AreaCellWidth { get; set; }
+        public int AreaCellHeight { get; set; }
+
+        public ButtonPanel(Config.PanelConfig cfg) : base(cfg)
         {
             InitializeComponent();
 
-            int areaLeft = ButtonArea.Left;
-            int areaTop = ButtonArea.Top;
-            int btnWidth = ButtonArea.Width / cfg.ControlCntX;
-            int btnHeight = ButtonArea.Height / cfg.ControlCntY;
+            AreaLeft = 3;
+            AreaTop = 15;
+            AreaCellWidth = ButtonArea.Width / cfg.AreaXSize;
+            AreaCellHeight = ButtonArea.Height / cfg.AreaYSize;
+
+#warning どうすれば
+            //Assembly assembly = Assembly.LoadFrom(cfg.AssemblyName);
+            Assembly assembly = typeof(FunctionLibraryBP.CreateInsertSQL).Assembly;
+            Type myType = assembly.GetType(cfg.ClassName);
+            MainInstance = Activator.CreateInstance(myType);
 
             this.Controls.Remove(ButtonArea);
 
-            int btnNumber = 1;
-            for (int y = 0, btnTop = areaTop
-                ;y < cfg.ControlCntY
-                ;y++, btnTop += btnHeight)
+            foreach (Config.ControlConfigElement cfgCtrl in cfg.Controls)
             {
-                for (int x = 0, btnLeft = areaLeft
-                    ; x < cfg.ControlCntX
-                    ; x++, btnLeft += btnWidth)
-                {
-                    Button btn = new Button();
-                    btn.Name = $"Button{btnNumber++}";
-                    btn.Width = btnWidth;
-                    btn.Height = btnHeight;
-                    btn.Left = btnLeft;
-                    btn.Top = btnTop;
-
-                    btn.Text = "実行";
-                    var tp = new ToolTip();
-                    tp.SetToolTip(btn, $"aaaaaa{btnNumber - 1}");
-
-                    string asmpath = "FunctionLibraryBP.dll";
-                    Assembly assembly = Assembly.LoadFrom(asmpath);
-                    Type myType = assembly.GetType(cfg.InstanceName);
-                    MainInstance = Activator.CreateInstance(myType);
-
-                    //this.MainInstance = new ClipSharing();
-                    //btn.Click += new EventHandler(((ClipSharing)MainInstance).SaveClipBoard);
-
-                    this.MainInstance = new CreateInsertSQL();
-                    btn.Click += new EventHandler(((CreateInsertSQL)MainInstance).SaveClipBoard);
-
-                    this.Controls.Add(btn);
-                }
+                this.Controls.Add((Control)CreateContorl(cfgCtrl));
             }
+        }
 
+        delegate void DelSample(object sender, EventArgs eventArgs);
+        private object CreateContorl(Config.ControlConfigElement cfg)
+        {
+            var asm = typeof(Form).Assembly;
+            Type myType = asm.GetType(cfg.ControlClassName);
+            object control = Activator.CreateInstance(myType);
+            Type tp = control.GetType();
+            PropertyInfo pInfo;
 
+            // Text
+            pInfo = tp.GetProperty("Text");
+            pInfo.SetValue(control, cfg.Text);
+            // Left
+            pInfo = tp.GetProperty("Left");
+            pInfo.SetValue(control, AreaLeft);
+            // Top
+            pInfo = tp.GetProperty("Top");
+            pInfo.SetValue(control, AreaTop);
+            // Width
+            pInfo = tp.GetProperty("Width");
+            pInfo.SetValue(control, AreaCellWidth * cfg.XSize);
+            AreaLeft += AreaCellWidth * cfg.XSize;
+            // Height
+            pInfo = tp.GetProperty("Height");
+            pInfo.SetValue(control, AreaCellHeight * cfg.YSize);
+            AreaTop += AreaCellHeight * cfg.YSize;
+
+            // EventHandler
+            EventInfo eInfo = tp.GetEvent(cfg.EventName);
+            Type tpClick = eInfo.EventHandlerType;
+
+            MethodInfo mInfo = MainInstance.GetType().GetMethod(cfg.EventMethodName);
+
+            Delegate d = Delegate.CreateDelegate(tpClick, MainInstance, mInfo);
+            MethodInfo minfo2 = eInfo.GetAddMethod();
+            minfo2.Invoke(control, new Object[] { d });
+
+            return control;
         }
 
         private void ButtonPanel_Load(object sender, EventArgs e)

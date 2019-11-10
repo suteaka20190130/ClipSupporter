@@ -51,6 +51,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ControlConfigElementCollection.cs" />
+    <Compile Include="Config\ControlConfigElement.cs" />
     <Compile Include="Config\PanelConfig.cs" />
     <Compile Include="Panel\BladePanel.cs">
       <SubType>UserControl</SubType>

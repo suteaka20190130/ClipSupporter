@@ -22,11 +22,11 @@ namespace ClipSupporter
 
         }
 
-        public BladePanel(PanelConfig cfg)
+        public BladePanel(Config.PanelConfig cfg)
         {
             InitializeComponent();
             this.TitleLabel.Text = cfg.TitleName;
-            this.PanelBasePath = cfg.PanelBasePath;
+            this.PanelBasePath = cfg.FolderName;
 #if DEBUG
             TitleLabel.Click += new EventHandler(TitleLabel_Click);
 #endif
