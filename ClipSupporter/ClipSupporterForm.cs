@@ -125,13 +125,13 @@ namespace ClipSupporter
 
             // Tabコントロールの生成
             Config.PanelSection cfgSection = (Config.PanelSection)Config.PanelSection.GetConfigs();
+                        int topPos = 3;
             foreach (var cfg in cfgSection.Panels)
             {
                 if (cfg is Config.PanelConfigElement)
                 {
                     for (int i = 0; i < 1; i++)
                     {
-                        int topPos = 3;
                         ButtonPanel pnl = new ButtonPanel((Config.PanelConfigElement)cfg);
                         pnl.Top = topPos;
                         pnl.Left = 3;
