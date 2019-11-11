@@ -7,26 +7,16 @@ using System.Threading.Tasks;
 
 namespace ClipSupporter.Config
 {
-    public sealed class PanelConfig : ConfigurationSection
+    public sealed class PanelConfigElement : ConfigurationElement
     {
-        public static PanelConfig GetConfig()
-        {
 
-            var config = (PanelConfig)ConfigurationManager.GetSection("PanelSections/PanelConfig") ?? new PanelConfig();
-            return config;
-        }
-
-        public static ConfigurationSectionCollection GetConfigs()
-        {
-            return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).Sections;
-
-        }
+        public string PanelName { get; set; }
 
         /// <summary>
         /// 見出し名
         /// </summary>
-        [ConfigurationProperty("TitleName", DefaultValue = "TitleName", IsRequired = true)]
-        public string TitleName 
+        [ConfigurationProperty("TitleName", DefaultValue = "TitleName", IsRequired = false)]
+        public string TitleName
         {
             get
             {
@@ -42,7 +32,7 @@ namespace ClipSupporter.Config
         /// パネルのベースフォルダ名
         /// </summary>
         [ConfigurationProperty("FolderName", DefaultValue = "FolderName", IsRequired = true)]
-        public string FolderName 
+        public string FolderName
         {
             get
             {
@@ -58,7 +48,7 @@ namespace ClipSupporter.Config
         /// パネルに割り当てる機能のアセンブリ名
         /// </summary>
         [ConfigurationProperty("AssemblyName", DefaultValue = "AssemblyName", IsRequired = true)]
-        public string AssemblyName 
+        public string AssemblyName
         {
             get
             {
@@ -121,12 +111,12 @@ namespace ClipSupporter.Config
         /// <summary>
         /// Constructor
         /// </summary>
-        public PanelConfig()
+        public PanelConfigElement()
         {
-         }
+        }
 
         [ConfigurationProperty("Controls")]
-        [ConfigurationCollection(typeof(ControlConfigElementCollection), AddItemName ="Control")]
+        [ConfigurationCollection(typeof(ControlConfigElementCollection), AddItemName = "Control")]
         public ControlConfigElementCollection Controls
         {
             get { return base["Controls"] as ControlConfigElementCollection; }

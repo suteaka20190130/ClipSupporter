@@ -17,7 +17,7 @@ namespace ClipSupporter.Panel
         public int AreaCellWidth { get; set; }
         public int AreaCellHeight { get; set; }
 
-        public ButtonPanel(Config.PanelConfig cfg) : base(cfg)
+        public ButtonPanel(Config.PanelConfigElement cfg) : base(cfg)
         {
             InitializeComponent();
 

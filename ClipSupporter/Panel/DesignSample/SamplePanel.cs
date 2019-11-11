@@ -14,7 +14,7 @@ namespace ClipSupporter.Panel.DesignSample
         {
 
         }
-        public SamplePanel(Config.PanelConfig cfg) : base(cfg)
+        public SamplePanel(Config.PanelConfigElement cfg) : base(cfg)
         {
             InitializeComponent();
         }

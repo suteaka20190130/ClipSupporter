@@ -22,7 +22,7 @@ namespace ClipSupporter
 
         }
 
-        public BladePanel(Config.PanelConfig cfg)
+        public BladePanel(Config.PanelConfigElement cfg)
         {
             InitializeComponent();
             this.TitleLabel.Text = cfg.TitleName;

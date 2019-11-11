@@ -114,8 +114,7 @@ namespace ClipSupporter
         private void ClipSupporterForm_Load(object sender, EventArgs e)
         {
             // SamplePanelの削除
-            // Tabコントロールの生成
-            for (int tp = tabControl1.TabPages.Count -1; tp >= 0; tp--)
+            for (int tp = tabControl1.TabPages.Count - 1; tp >= 0; tp--)
             {
                 int cntCount = tabControl1.TabPages[tp].Controls.Count;
                 for (int i = cntCount - 1; i >= 0; i--)
@@ -124,22 +123,23 @@ namespace ClipSupporter
                 }
             }
 
-            var cfg = Config.PanelConfig.GetConfig();
-            //foreach (var cfg in Config.PanelConfig.GetConfigs())
-            //{
-            //    if (cfg is Config.PanelConfig)
-            //    {
-            for (int i = 0; i < 1; i++)
+            // Tabコントロールの生成
+            Config.PanelSection cfgSection = (Config.PanelSection)Config.PanelSection.GetConfigs();
+            foreach (var cfg in cfgSection.Panels)
             {
-                int topPos = 3;
-                ButtonPanel pnl = new ButtonPanel((Config.PanelConfig)cfg);
-                pnl.Top = topPos;
-                pnl.Left = 3;
-                tabControl1.TabPages[0].Controls.Add(pnl);
-                topPos += pnl.Height;
+                if (cfg is Config.PanelConfigElement)
+                {
+                    for (int i = 0; i < 1; i++)
+                    {
+                        int topPos = 3;
+                        ButtonPanel pnl = new ButtonPanel((Config.PanelConfigElement)cfg);
+                        pnl.Top = topPos;
+                        pnl.Left = 3;
+                        tabControl1.TabPages[0].Controls.Add(pnl);
+                        topPos += pnl.Height;
+                    }
+                }
             }
-            //    }
-            //}
 
             tabControl1.SelectedIndex = 0;
         }
