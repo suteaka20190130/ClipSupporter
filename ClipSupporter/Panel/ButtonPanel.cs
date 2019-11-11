@@ -26,9 +26,7 @@ namespace ClipSupporter.Panel
             AreaCellWidth = ButtonArea.Width / cfg.AreaXSize;
             AreaCellHeight = ButtonArea.Height / cfg.AreaYSize;
 
-#warning どうすれば
             Assembly assembly = Assembly.LoadFrom(cfg.AssemblyName+".dll");
-            //Assembly assembly = typeof(FunctionLibraryBP.CreateInsertSQL).Assembly;
             Type myType = assembly.GetType(cfg.ClassName);
             MainInstance = Activator.CreateInstance(myType);
 
@@ -65,7 +63,7 @@ namespace ClipSupporter.Panel
             // Height
             pInfo = tp.GetProperty("Height");
             pInfo.SetValue(control, AreaCellHeight * cfg.YSize);
-            AreaTop += AreaCellHeight * cfg.YSize;
+            //AreaTop += AreaCellHeight * cfg.YSize;
 
             // EventHandler
             EventInfo eInfo = tp.GetEvent(cfg.EventName);
