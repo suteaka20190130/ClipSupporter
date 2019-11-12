@@ -10,11 +10,33 @@ using CommonLibrary;
 
 namespace FunctionLibraryBP
 {
-    public class CreateInsertSQL
+    public class CreateInsertSQL : BaseFunctionClass
     {
-        public CreateInsertSQL()
+        static char[] WhiteSpaceDelimiters = new char[] {
+        '\u0009',  // CHARACTER TABULATION
+        '\u000A',  // LINE FEED
+        '\u000B',  // LINE TABULATION
+        '\u000C',  // FORM FEED
+        '\u000D',  // CARRIAGE RETURN
+        '\u0020',  // SPACE
+        '\u00A0',  // NO-BREAK SPACE
+        '\u2000',  // EN QUAD
+        '\u2001',  // EM QUAD
+        '\u2002',  // EN SPACE
+        '\u2003',  // EM SPACE
+        '\u2004',  // THREE-PER-EM SPACE
+        '\u2005',  // FOUR-PER-EM SPACE
+        '\u2006',  // SIX-PER-EM SPACE
+        '\u2007',  // FIGURE SPACE
+        '\u2008',  // PUNCTUATION SPACE
+        '\u2009',  // THIN SPACE
+        '\u200A',  // HAIR SPACE
+        '\u200B',  // ZERO WIDTH SPACE
+//      '\u3000',  // IDEOGRAPHIC SPACE -- これが所謂全角スペース
+        '\uFEFF' // ZERO WIDTH NO-BREAK SPACE
+    };
+        public CreateInsertSQL(string panelName) : base(panelName)
         {
-
         }
         /// <summary>
         /// Recordデータのトリム実施有無
@@ -25,7 +47,7 @@ namespace FunctionLibraryBP
         /// </summary>
         public string NullString { get; set; }
 
-        public void SaveClipBoard(object sender, EventArgs e)
+        public void CreateInsertSQLString(object sender, EventArgs e)
         {
             #region 暫定設定処理
             IsTrim = true;
@@ -77,7 +99,7 @@ namespace FunctionLibraryBP
                             // 全て空白はトリムしない
                             if (!cellData.All(c => c == ' '))
                             {
-                                cellData = cellData.Trim();
+                                cellData = cellData.TrimEnd(WhiteSpaceDelimiters);
                             }
                         }
                         if (cellData == tableData[y][x])
@@ -110,6 +132,11 @@ namespace FunctionLibraryBP
 
             Clipboard.Clear();
             Clipboard.SetText(sbRecord.ToString());
+        }
+
+        public override void ShowDegugInfo(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

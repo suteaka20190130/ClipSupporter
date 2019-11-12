@@ -10,11 +10,10 @@ using CommonLibrary;
 
 namespace FunctionLibraryBP
 {
-    public class ClipSharing
+    public class ClipSharing : BaseFunctionClass
     {
         public Timer CopyPollingTimer;
 
-        public string ClipDataFolderPath = String.Empty;
         const string DATATYPE_TEXT = "text";
         const string DATATYPE_BIN = "bin";
         const string DATATYPE_BMP = "bmp";
@@ -55,14 +54,14 @@ namespace FunctionLibraryBP
             Binary,
         }
 
-        public ClipSharing()
+        public ClipSharing(string panelName) : base(panelName)
         {
-            //Directory.CreateDirectory(ClipDataFolderPath);
+            Directory.CreateDirectory(BasePath);
             // clear folder and children files
-            //FileControler.ClearDataDirectory(ClipDataFolderPath);
+            FileControler.ClearDataDirectory(BasePath);
 
             CopyPollingTimer = new Timer();
-            CopyPollingTimer.Interval = 2000;
+            CopyPollingTimer.Interval = 10000;
             CopyPollingTimer.Tick += new EventHandler(PollingTimer_Tick);
             CopyPollingTimer.Start();
 
@@ -72,18 +71,23 @@ namespace FunctionLibraryBP
         public void PollingTimer_Tick(object sender, EventArgs e)
         {
             // Saveファイルの有無チェック
-            var inputFileList = Directory.EnumerateFileSystemEntries(ClipDataFolderPath).ToArray();
+            var inputFileList = Directory.EnumerateFileSystemEntries(BasePath).ToArray();
             if (inputFileList.Length <= 0) return;
+
+            // 99_ENDファイルが無い場合はSave中
+            if (!inputFileList.Any(f => Path.GetFileName(f) == "99_END")) return;
 
             var saveFileCreateTime = inputFileList.Max(f => File.GetLastWriteTime(f));
             if (DateTime.Compare(LastLoadTime, saveFileCreateTime) >= 0) return;
+
+            // 00_START, 99_ENDファイルは対象外
 
             Clipboard.Clear();
             foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => inputFileList.Select(fl => Path.GetFileName(fl)).Contains(f[0])))
             {
                 string dataFormat = targetFormats[0];
                 string dataType = targetFormats[1];
-                string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
+                string outputFilePath = Path.Combine(BasePath, dataFormat);
 
                 switch (dataType)
                 {
@@ -115,59 +119,74 @@ namespace FunctionLibraryBP
                         break;
                 }
             }
+
+            ShareCompornent.NotifyControl.ShowBalloonTip(5000, "ClipBord共有", "ClipBordのコピーが完了しました", ToolTipIcon.Info);
             LastLoadTime = DateTime.Now;
         }
 
         public void SaveClipBoard(object sender, EventArgs e)
         {
-            //
-            FileControler.ClearDataDirectory(ClipDataFolderPath);
+            var dataObj = Clipboard.GetDataObject();
+            if (dataObj == null || dataObj.GetFormats().Length <= 0) return;
 
-            // Saveファイルの有無チェック
-            var inputFileList = Directory.EnumerateFileSystemEntries(ClipDataFolderPath).ToArray();
-            if (inputFileList.Length <= 0) return;
+            // 現在Save中の場合は中断
+            var inputFileList = Directory.EnumerateFileSystemEntries(BasePath).ToArray();
+            if (inputFileList.Any(f => Path.GetFileName(f) == "00_START")
+             && !inputFileList.Any(f => Path.GetFileName(f) == "99_END")) return;
 
-            var saveFileCreateTime = inputFileList.Max(f => File.GetLastWriteTime(f));
-            if (DateTime.Compare(LastLoadTime, saveFileCreateTime) >= 0) return;
+            // clear folder amd children files
+            FileControler.ClearDataDirectory(BasePath);
 
-            Clipboard.Clear();
-            foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => inputFileList.Select(fl => Path.GetFileName(fl)).Contains(f[0])))
+            File.Create(Path.Combine(BasePath, "00_START")).Close();
+
+            string[] formats = dataObj.GetFormats();
+            foreach (string[] targetFormats in ChoiceFormatPriorities.Where(f => formats.Contains(f[0])))
             {
                 string dataFormat = targetFormats[0];
                 string dataType = targetFormats[1];
-                string outputFilePath = Path.Combine(ClipDataFolderPath, dataFormat);
+                string outputFilePath = Path.Combine(BasePath, dataFormat);
 
+                // Formatに合わせて保存
                 switch (dataType)
                 {
-                    case DATATYPE_FILE:
-                        Clipboard.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
+                    case DATATYPE_BMP:
+                        var img = Clipboard.GetImage();
+                        img.Save(outputFilePath);
                         break;
                     case DATATYPE_BIN:
-                        byte[] data = File.ReadAllBytes(outputFilePath);
-                        Clipboard.SetData(dataFormat, data);
+                        var ms = (MemoryStream)dataObj.GetData(dataFormat);
+                        File.WriteAllBytes(outputFilePath, ms.ToArray());
                         break;
-                    case DATATYPE_BMP:
-                        using (var ms = new MemoryStream(File.ReadAllBytes(outputFilePath)))
+                    case DATATYPE_FILE:
+                        Directory.CreateDirectory(outputFilePath);
+                        foreach (var path in (string[])dataObj.GetData(dataFormat))
                         {
-                            Bitmap bmp = new Bitmap(ms);
-                            Clipboard.SetData(dataFormat, bmp);
+                            FileControler.CopyAndReplace(path, outputFilePath);
                         }
                         break;
                     case DATATYPE_STR_ARRAY:
-                        using (var sr = new StreamReader(outputFilePath))
+                        using (var sw = new StreamWriter(outputFilePath))
                         {
-                            Clipboard.SetData(dataFormat, sr.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.None));
+                            sw.Write(String.Join("\r\n", (string[])dataObj.GetData(dataFormat)));
                         }
                         break;
                     case DATATYPE_TEXT:
-                        using (var sr = new StreamReader(outputFilePath))
+                        using (var sw = new StreamWriter(outputFilePath))
                         {
-                            Clipboard.SetData(dataFormat, sr.ReadToEnd());
+                            sw.Write(dataObj.GetData(dataFormat));
                         }
                         break;
                 }
             }
+
+            File.Create(Path.Combine(BasePath, "99_END")).Close();
+
             LastLoadTime = DateTime.Now;
+        }
+
+        public override void ShowDegugInfo(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

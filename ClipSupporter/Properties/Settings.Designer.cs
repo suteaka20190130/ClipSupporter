@@ -37,7 +37,7 @@ namespace ClipSupporter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Gray")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Control")]
         public string DesignColor {
             get {
                 return ((string)(this["DesignColor"]));

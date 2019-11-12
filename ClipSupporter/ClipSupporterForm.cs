@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClipSupporter.Panel;
 using System.Reflection;
+using CommonLibrary;
 
 namespace ClipSupporter
 {
@@ -32,16 +33,18 @@ namespace ClipSupporter
         {
             InitializeComponent();
 
+            // 2重起動の防止
+
             // 設定の取り込み
             LoadProperty();
 
-            //ClipDataFolderPath = Path.Combine(ConfigurationManager.AppSettings["BasePath"]
-            //    , ConfigurationManager.AppSettings["AppName"]);
-
-            //Directory.CreateDirectory(ClipDataFolderPath);
-            this.ApplicationBasePath = ConfigurationManager.AppSettings["ApplicationBasePath"];
+            // config読み出し
             this.Text = ConfigurationManager.AppSettings["ApplicationBaseTitle"];
 
+            // Panel共有オブジェクトの生成
+            ShareCompornent.ApplicationBasePath = ConfigurationManager.AppSettings["ApplicationBasePath"];
+            ShareCompornent.NotifyControl = notifyIcon1;
+            
         }
 
         private void LoadProperty()
@@ -87,7 +90,7 @@ namespace ClipSupporter
                     RedToolStripMenuItem.Checked = true;
                     break;
                 default:
-                    MessageBox.Show($"起動に失敗しました。DesignColor={DesignColor}");
+                    MessageBox.Show($"起動に失敗しました。DesignColor={color}");
                     break;
             }
         }
@@ -96,7 +99,7 @@ namespace ClipSupporter
         {
             ((ToolStripMenuItem)sender).Checked = this.TopMost = DisplayTopMost = !DisplayTopMost;
 
-            Properties.Settings.Default["TopMost"] = this.TopMost.ToString();
+            Properties.Settings.Default["TopMost"] = this.TopMost;
         }
 
         private void ColorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -142,6 +145,22 @@ namespace ClipSupporter
             }
 
             tabControl1.SelectedIndex = 0;
+        }
+
+        private void ClipSupporterForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SaveProperty();
+        }
+
+        private void ClipSupporterForm_FormClosed(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void ClipSupporterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            notifyIcon1.Dispose();
+            SaveProperty();
         }
     }
 }

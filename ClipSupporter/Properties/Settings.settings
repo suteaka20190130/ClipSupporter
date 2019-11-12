@@ -6,7 +6,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DesignColor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Gray</Value>
+      <Value Profile="(Default)">Control</Value>
     </Setting>
   </Settings>
 </SettingsFile>

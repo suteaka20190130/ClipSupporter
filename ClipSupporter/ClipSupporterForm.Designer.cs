@@ -33,6 +33,7 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageKC = new System.Windows.Forms.TabPage();
+            this.PanelArea = new System.Windows.Forms.Panel();
             this.tabPageCalc = new System.Windows.Forms.TabPage();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,7 +46,6 @@
             this.GreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.PanelArea = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPageKC.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -80,6 +80,13 @@
             this.tabPageKC.TabIndex = 0;
             this.tabPageKC.Text = "業務";
             this.tabPageKC.UseVisualStyleBackColor = true;
+            // 
+            // PanelArea
+            // 
+            this.PanelArea.Location = new System.Drawing.Point(5, 3);
+            this.PanelArea.Name = "PanelArea";
+            this.PanelArea.Size = new System.Drawing.Size(200, 300);
+            this.PanelArea.TabIndex = 3;
             // 
             // tabPageCalc
             // 
@@ -132,7 +139,7 @@
             // 
             // GrayToolStripMenuItem
             // 
-            this.GrayToolStripMenuItem.AccessibleName = "Gray";
+            this.GrayToolStripMenuItem.AccessibleName = "Control";
             this.GrayToolStripMenuItem.Name = "GrayToolStripMenuItem";
             this.GrayToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.GrayToolStripMenuItem.Text = "グレー";
@@ -140,7 +147,7 @@
             // 
             // BlueToolStripMenuItem
             // 
-            this.BlueToolStripMenuItem.AccessibleName = "Blue";
+            this.BlueToolStripMenuItem.AccessibleName = "ActiveCaption";
             this.BlueToolStripMenuItem.Name = "BlueToolStripMenuItem";
             this.BlueToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.BlueToolStripMenuItem.Text = "ブルー";
@@ -156,7 +163,7 @@
             // 
             // RedToolStripMenuItem
             // 
-            this.RedToolStripMenuItem.AccessibleName = "Red";
+            this.RedToolStripMenuItem.AccessibleName = "LightPink";
             this.RedToolStripMenuItem.Name = "RedToolStripMenuItem";
             this.RedToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.RedToolStripMenuItem.Text = "レッド";
@@ -164,7 +171,7 @@
             // 
             // GreenToolStripMenuItem
             // 
-            this.GreenToolStripMenuItem.AccessibleName = "Green";
+            this.GreenToolStripMenuItem.AccessibleName = "PaleGreen";
             this.GreenToolStripMenuItem.Name = "GreenToolStripMenuItem";
             this.GreenToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.GreenToolStripMenuItem.Text = "グリーン";
@@ -173,20 +180,14 @@
             // 終了ToolStripMenuItem
             // 
             this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-            this.終了ToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.終了ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.終了ToolStripMenuItem.Text = "終了";
+            this.終了ToolStripMenuItem.Click += new System.EventHandler(this.ClipSupporterForm_FormClosed);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // PanelArea
-            // 
-            this.PanelArea.Location = new System.Drawing.Point(5, 3);
-            this.PanelArea.Name = "PanelArea";
-            this.PanelArea.Size = new System.Drawing.Size(200, 300);
-            this.PanelArea.TabIndex = 3;
             // 
             // ClipSupporterForm
             // 
@@ -204,6 +205,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "ClipSupporter";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ClipSupporterForm_FormClosing);
             this.Load += new System.EventHandler(this.ClipSupporterForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPageKC.ResumeLayout(false);

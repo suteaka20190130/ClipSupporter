@@ -126,6 +126,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj">
+      <Project>{FCDE42DA-C603-435C-A6F2-44866C0035FC}</Project>
+      <Name>CommonLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FunctionLibraryBP\FunctionLibraryBP.csproj">
       <Project>{3B76F210-8FE3-4215-9426-E13D4DBADA47}</Project>
       <Name>FunctionLibraryBP</Name>
@@ -136,6 +140,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SubForms\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -18,6 +18,7 @@ namespace CommonLibrary
 
             foreach (var dir in Directory.EnumerateDirectories(strPath))
             {
+                ClearDataDirectory(dir);
                 Directory.Delete(dir, true);
             }
         }

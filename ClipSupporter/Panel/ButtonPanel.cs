@@ -28,7 +28,8 @@ namespace ClipSupporter.Panel
 
             Assembly assembly = Assembly.LoadFrom(cfg.AssemblyName+".dll");
             Type myType = assembly.GetType(cfg.ClassName);
-            MainInstance = Activator.CreateInstance(myType);
+            ConstructorInfo constructor = myType.GetConstructor(new Type[] { typeof(string) });
+            MainInstance = constructor.Invoke(new object[] { cfg.FolderName });
 
             this.Controls.Remove(ButtonArea);
 
