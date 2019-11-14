@@ -63,7 +63,7 @@ namespace FunctionLibraryBP
             CopyPollingTimer = new Timer();
             CopyPollingTimer.Interval = 10000;
             CopyPollingTimer.Tick += new EventHandler(PollingTimer_Tick);
-            CopyPollingTimer.Start();
+            CopyPollingTimer.Enabled = true;
 
             LastLoadTime = DateTime.Now;
         }

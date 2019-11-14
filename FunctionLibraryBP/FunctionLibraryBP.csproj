@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseFunctionClass.cs" />
+    <Compile Include="ClipSharing2.cs" />
     <Compile Include="CreateInsertSQL.cs" />
     <Compile Include="ClipSharing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
