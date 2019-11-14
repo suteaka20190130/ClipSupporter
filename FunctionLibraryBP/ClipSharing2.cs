@@ -28,10 +28,10 @@ namespace FunctionLibraryBP
             // clear folder and children files
             FileControler.ClearDataDirectory(BasePath);
 
-            //CopyPollingTimer = new Timer();
-            //CopyPollingTimer.Interval = 10000;
-            //CopyPollingTimer.Tick += new EventHandler(PollingTimer_Tick);
-            //CopyPollingTimer.Enabled = true;
+            CopyPollingTimer = new Timer();
+            CopyPollingTimer.Interval = 10000;
+            CopyPollingTimer.Tick += new EventHandler(LoadClipBoard);
+            CopyPollingTimer.Enabled = true;
 
             LastLoadTime = DateTime.Now;
         }
@@ -43,10 +43,10 @@ namespace FunctionLibraryBP
             if (inputFileList.Length <= 0) return;
 
             // 99_ENDファイルが無い場合はSave中
-            if (!inputFileList.Any(f => Path.GetFileName(f) == "99_END")) return;
+            if (!inputFileList.Any(f => Path.GetFileName(f) == "END")) return;
 
-            //var saveFileCreateTime = inputFileList.Max(f => File.GetLastWriteTime(f));
-            //if (DateTime.Compare(LastLoadTime, saveFileCreateTime) >= 0) return;
+            var saveFileCreateTime = inputFileList.Max(f => File.GetLastWriteTime(f));
+            if (DateTime.Compare(LastLoadTime, saveFileCreateTime) >= 0) return;
 
 
             DataObject dataObject = new DataObject();
@@ -55,21 +55,38 @@ namespace FunctionLibraryBP
             {
                 string fileName = inputFileList[fNo];
                 string outputFilePath = Path.Combine(BasePath, fileName);
-    
-                if (Directory.Exists(outputFilePath)) continue;
+
+                // ファイルコピーの確認
+                if (Directory.Exists(outputFilePath))
+                {
+                    var dResult = MessageBox.Show("コピーする対象がファイル・フォルダです。\r\n[はい]ファイルをコピー\r\n[いいえ]ファイル名をコピー"
+                        , "ファイルコピーの確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dResult == DialogResult.Yes)
+                    {
+                        DataObject fileData = new DataObject();
+                        fileData.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
+                        Clipboard.SetDataObject(fileData);
+
+                        ShareCompornent.NotifyControl.ShowBalloonTip(5000, "ClipBord共有", "ClipBordのコピーが完了しました", ToolTipIcon.Info);
+                        LastLoadTime = DateTime.Now;
+                        return;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
                 // 00_START, 99_ENDファイルは対象外
                 if (fileName.EndsWith("START") || fileName.EndsWith("END")) continue;
 
-                string format = Path.GetFileNameWithoutExtension(fileName).Substring(3);
+                string format = Path.GetFileNameWithoutExtension(fileName);
                 string extName = Path.GetExtension(fileName).Substring(1);
 
                 Debug.WriteLine($"load {fileName}");
 
                 switch (extName)
                 {
-                    case DATATYPE_FILE:
-                        dataObject.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
-                        break;
                     case DATATYPE_BIN:
                         byte[] data = File.ReadAllBytes(outputFilePath);
                         dataObject.SetData(format, new MemoryStream(data));
@@ -104,12 +121,12 @@ namespace FunctionLibraryBP
             LastLoadTime = DateTime.Now;
 
             // 確認
-            string backUpPath = BasePath;
-            BasePath = BasePath.Substring(0, BasePath.Length - 1);
-            // clear folder amd children files
-            FileControler.ClearDataDirectory(BasePath);
-            SaveClipBoard(sender, e);
-            BasePath = backUpPath;
+            //string backUpPath = BasePath;
+            //BasePath = BasePath.Substring(0, BasePath.Length - 1);
+            //// clear folder amd children files
+            //FileControler.ClearDataDirectory(BasePath);
+            //SaveClipBoard(sender, e);
+            //BasePath = backUpPath;
         }
 
         public void SaveClipBoard(object sender, EventArgs e)
@@ -119,8 +136,8 @@ namespace FunctionLibraryBP
 
             // 現在Save中の場合は強制実行するか確認する
             var inputFileList = Directory.EnumerateFileSystemEntries(BasePath).ToArray();
-            if (inputFileList.Any(f => Path.GetFileName(f) == "00_START")
-             && !inputFileList.Any(f => Path.GetFileName(f) == "99_END"))
+            if (inputFileList.Any(f => Path.GetFileName(f) == "START")
+             && !inputFileList.Any(f => Path.GetFileName(f) == "END"))
             {
                 var dialogResult = MessageBox.Show("コピー中のファイルが存在します。\r\n強制的にセーブしますか？"
                                                  , "強制セーブ確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -133,17 +150,17 @@ namespace FunctionLibraryBP
             // clear folder amd children files
             FileControler.ClearDataDirectory(BasePath);
 
-            File.Create(Path.Combine(BasePath, "00_START")).Close();
+            File.Create(Path.Combine(BasePath, "START")).Close();
 
             string[] formats = dataObj.GetFormats();
             for (int fNo = 0; fNo < formats.Length; fNo++)
             { 
                 string dataFormat = formats[fNo];
-                string outputFilePath = Path.Combine(BasePath, $"{fNo+1:D2}_{dataFormat}");
+                string outputFilePath = Path.Combine(BasePath, $"{dataFormat}");
                 var clipData = dataObj.GetData(dataFormat);
                 if (clipData == null) continue;
 
-                // Formatに合わせて保存
+                                // Formatに合わせて保存
                 switch (clipData.GetType().Name)
                 {
                     case DATATYPE_BMP:
@@ -162,7 +179,7 @@ namespace FunctionLibraryBP
                             for (int i = 0; i < outputData.Length; i++)
                             {
                                 FileControler.CopyAndReplace(outputData[i], outputFilePath);
-                                outputData[i] = Path.Combine(outputFilePath, Path.GetFileName(outputData[i]));
+                                //outputData[i] = Path.Combine(outputFilePath, Path.GetFileName(outputData[i]));
                             }
                         }
                         using (var sw = new StreamWriter($"{outputFilePath}.{DATATYPE_STR_ARRAY}"))
@@ -183,7 +200,7 @@ namespace FunctionLibraryBP
                 Debug.WriteLine($"save {fNo}__{dataFormat}__{clipData.GetType().Name}");
             }
 
-            File.Create(Path.Combine(BasePath, "99_END")).Close();
+            File.Create(Path.Combine(BasePath, "END")).Close();
 
             LastLoadTime = DateTime.Now;
         }
