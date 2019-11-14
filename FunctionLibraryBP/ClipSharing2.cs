@@ -16,7 +16,7 @@ namespace FunctionLibraryBP
         public Timer CopyPollingTimer;
         const string DATATYPE_TEXT = "String";
         const string DATATYPE_BIN = "MemoryStream";
-        const string DATATYPE_BMP = "bmp";
+        const string DATATYPE_BMP = "Bitmap";
         const string DATATYPE_FILE = "file";
         const string DATATYPE_STR_ARRAY = "stringA";
 
@@ -36,7 +36,7 @@ namespace FunctionLibraryBP
             LastLoadTime = DateTime.Now;
         }
 
-        public void PollingTimer_Tick(object sender, EventArgs e)
+        public void LoadClipBoard(object sender, EventArgs e)
         {
             // Saveファイルの有無チェック
             var inputFileList = Directory.EnumerateFileSystemEntries(BasePath).ToArray();
@@ -48,54 +48,68 @@ namespace FunctionLibraryBP
             //var saveFileCreateTime = inputFileList.Max(f => File.GetLastWriteTime(f));
             //if (DateTime.Compare(LastLoadTime, saveFileCreateTime) >= 0) return;
 
-            // 00_START, 99_ENDファイルは対象外
 
-            Clipboard.Clear();
+            DataObject dataObject = new DataObject();
+
             for (int fNo = 0; fNo < inputFileList.Count(); fNo++)
             {
                 string fileName = inputFileList[fNo];
                 string outputFilePath = Path.Combine(BasePath, fileName);
+    
                 if (Directory.Exists(outputFilePath)) continue;
+                // 00_START, 99_ENDファイルは対象外
                 if (fileName.EndsWith("START") || fileName.EndsWith("END")) continue;
 
                 string format = Path.GetFileNameWithoutExtension(fileName).Substring(3);
                 string extName = Path.GetExtension(fileName).Substring(1);
 
+                Debug.WriteLine($"load {fileName}");
+
                 switch (extName)
                 {
                     case DATATYPE_FILE:
-                        Clipboard.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
+                        dataObject.SetData(DataFormats.FileDrop, Directory.EnumerateFileSystemEntries(outputFilePath).ToArray());
                         break;
                     case DATATYPE_BIN:
                         byte[] data = File.ReadAllBytes(outputFilePath);
-                        Clipboard.SetData(format, data);
+                        dataObject.SetData(format, new MemoryStream(data));
                         break;
 
                     case DATATYPE_BMP:
                         using (var ms = new MemoryStream(File.ReadAllBytes(outputFilePath)))
                         {
                             Bitmap bmp = new Bitmap(ms);
-                            Clipboard.SetData(format, bmp);
+                            dataObject.SetData(format, bmp);
                         }
                         break;
                     case DATATYPE_STR_ARRAY:
                         using (var sr = new StreamReader(outputFilePath))
                         {
-                            Clipboard.SetData(format, sr.ReadToEnd().Split(new string[] { "\r\n" }
+                            dataObject.SetData(format, sr.ReadToEnd().Split(new string[] { "\r\n" }
                             , StringSplitOptions.None));
                         }
                         break;
                     case DATATYPE_TEXT:
                         using (var sr = new StreamReader(outputFilePath))
                         {
-                            Clipboard.SetData(format, sr.ReadToEnd());
+                            dataObject.SetData(format, sr.ReadToEnd());
                         }
                         break;
                 }
             }
+            Clipboard.Clear();
+            Clipboard.SetDataObject(dataObject);
 
             ShareCompornent.NotifyControl.ShowBalloonTip(5000, "ClipBord共有", "ClipBordのコピーが完了しました", ToolTipIcon.Info);
             LastLoadTime = DateTime.Now;
+
+            // 確認
+            string backUpPath = BasePath;
+            BasePath = BasePath.Substring(0, BasePath.Length - 1);
+            // clear folder amd children files
+            FileControler.ClearDataDirectory(BasePath);
+            SaveClipBoard(sender, e);
+            BasePath = backUpPath;
         }
 
         public void SaveClipBoard(object sender, EventArgs e)
@@ -166,6 +180,7 @@ namespace FunctionLibraryBP
                         Debug.WriteLine($"{fNo}__{dataFormat}__{clipData.GetType().Name}");
                         break;
                 }
+                Debug.WriteLine($"save {fNo}__{dataFormat}__{clipData.GetType().Name}");
             }
 
             File.Create(Path.Combine(BasePath, "99_END")).Close();
