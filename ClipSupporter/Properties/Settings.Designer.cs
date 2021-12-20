@@ -26,9 +26,9 @@ namespace ClipSupporter.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool TopMost {
+        public string TopMost {
             get {
-                return ((bool)(this["TopMost"]));
+                return ((string)(this["TopMost"]));
             }
             set {
                 this["TopMost"] = value;
@@ -37,7 +37,7 @@ namespace ClipSupporter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Control")]
+        [global::System.Configuration.DefaultSettingValueAttribute("GrayText")]
         public string DesignColor {
             get {
                 return ((string)(this["DesignColor"]));

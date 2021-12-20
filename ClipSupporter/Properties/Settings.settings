@@ -2,11 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ClipSupporter.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="TopMost" Type="System.Boolean" Scope="User">
+    <Setting Name="TopMost" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DesignColor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Control</Value>
+      <Value Profile="(Default)">GrayText</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -10,7 +10,17 @@ namespace ClipSupporter.Config
     public sealed class PanelConfigElement : ConfigurationElement
     {
 
+        public static int cellXSize = 0;
+        public static int cellYSize = 0;
+
         public string PanelName { get; set; }
+
+        [ConfigurationProperty("Tag", DefaultValue =null, IsRequired = false)]
+        public List<string> Tags
+        {
+            get; 
+            set; 
+        }
 
         /// <summary>
         /// 見出し名
@@ -77,34 +87,36 @@ namespace ClipSupporter.Config
         }
 
         /// <summary>
-        /// パネルの表示エリアXサイズ
+        /// パネルのXサイズ（分割列数　※拡張不可）
         /// </summary>
-        [ConfigurationProperty("AreaXSize", DefaultValue = 4, IsRequired = true)]
-        public int AreaXSize
+        [ConfigurationProperty("DividedXSize", DefaultValue = 4, IsRequired = true)]
+        public int DividedXSize
         {
             get
             {
-                return (int)this["AreaXSize"];
+                return (int)this["DividedXSize"];
             }
             set
             {
-                this["AreaXSize"] = value;
+                //cellXSize = CommonLibrary.DesignConst.PanelAreaXSize / value;
+                this["DividedXSize"] = value;
             }
         }
 
         /// <summary>
-        /// パネルの表示エリアYサイズ
+        /// パネルのYサイズ（拡張行数　※分割不可）
         /// </summary>
-        [ConfigurationProperty("AreaYSize", DefaultValue = 1, IsRequired = true)]
-        public int AreaYSize
+        [ConfigurationProperty("ExpansionYSize", DefaultValue = 1, IsRequired = true)]
+        public int ExpansionYSize
         {
             get
             {
-                return (int)this["AreaYSize"];
+                return (int)this["ExpansionYSize"];
             }
             set
             {
-                this["AreaYSize"] = value;
+                //cellYSize = CommonLibrary.DesignConst.PanelAreaYSize;
+                this["ExpansionYSize"] = value;
             }
         }
 

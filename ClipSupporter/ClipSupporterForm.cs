@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using ClipSupporter.Panel;
 using System.Reflection;
 using CommonLibrary;
+using CommonLibrary.Limited;
 
 namespace ClipSupporter
 {
@@ -23,6 +24,8 @@ namespace ClipSupporter
         public bool DisplayTopMost { get; set; }
         public string DesignColor { get; set; }
         public string ApplicationBasePath { get; set; }
+
+        public LimitedState MyLimitedState { get; set; }
 
         /// <summary>
         /// constructor
@@ -33,25 +36,28 @@ namespace ClipSupporter
         {
             InitializeComponent();
 
-            // 2重起動の防止
-
             // 設定の取り込み
             LoadProperty();
 
             // config読み出し
-            this.Text = ConfigurationManager.AppSettings["ApplicationBaseTitle"];
+            string title = ConfigurationManager.AppSettings["ApplicationTitle"];
+            this.Text = title;
+            notifyIcon.Text = title;
+            notifyIcon.ContextMenuStrip = notifyMenu;
 
             // Panel共有オブジェクトの生成
-            ShareCompornent.ApplicationBasePath = ConfigurationManager.AppSettings["ApplicationBasePath"];
-            ShareCompornent.NotifyControl = notifyIcon1;
-            
+            ShareCompornent.NotifyControl = notifyIcon;
+            ShareCompornent.ConfigBasePath = Path.Combine(Application.StartupPath, "Conf");
+            ShareCompornent.TemplateBasePath = ConfigurationManager.AppSettings["ApplicationBasePath"];
+            ShareCompornent.LimitedSts = MyLimitedState;
         }
 
         private void LoadProperty()
         {
             // DisplayTopMost
-            DisplayTopMost = (bool)Properties.Settings.Default["TopMost"];
+            DisplayTopMost = Boolean.Parse(Properties.Settings.Default["TopMost"].ToString());
             this.TopMost = DisplayTopMost;
+            //if (DisplayTopMost) this.Activate();
             topMostToolStripMenuItem.Checked = DisplayTopMost;
 
             // DesignColor
@@ -69,8 +75,8 @@ namespace ClipSupporter
         {
             switch (color)
             {
-                case "Control":
-                    this.BackColor = SystemColors.Control;
+                case "GrayText":
+                    this.BackColor = SystemColors.GrayText;
                     GrayToolStripMenuItem.Checked = true;
                     break;
                 case "ActiveCaption":
@@ -99,7 +105,7 @@ namespace ClipSupporter
         {
             ((ToolStripMenuItem)sender).Checked = this.TopMost = DisplayTopMost = !DisplayTopMost;
 
-            Properties.Settings.Default["TopMost"] = this.TopMost;
+            Properties.Settings.Default["TopMost"] = this.TopMost.ToString();
         }
 
         private void ColorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -116,6 +122,9 @@ namespace ClipSupporter
 
         private void ClipSupporterForm_Load(object sender, EventArgs e)
         {
+#warning タブコントロール生成処理追加　必要
+
+#warning 現状SamplePanel不要
             // SamplePanelの削除
             for (int tp = tabControl1.TabPages.Count - 1; tp >= 0; tp--)
             {
@@ -128,39 +137,58 @@ namespace ClipSupporter
 
             // Tabコントロールの生成
             Config.PanelSection cfgSection = (Config.PanelSection)Config.PanelSection.GetConfigs();
-                        int topPos = 3;
+            int topPos = 3;
+            int index = 0;
+            tabControl1.Name = "Tab0";
             foreach (var cfg in cfgSection.Panels)
             {
                 if (cfg is Config.PanelConfigElement)
                 {
-                    for (int i = 0; i < 1; i++)
-                    {
-                        ButtonPanel pnl = new ButtonPanel((Config.PanelConfigElement)cfg);
-                        pnl.Top = topPos;
-                        pnl.Left = 3;
-                        tabControl1.TabPages[0].Controls.Add(pnl);
-                        topPos += pnl.Height;
-                    }
+                    ButtonPanel pnl = new ButtonPanel("Panel"+index++, (Config.PanelConfigElement)cfg);
+                    pnl.Top = topPos;
+                    pnl.Left = 3;
+                    tabControl1.TabPages[0].Controls.Add(pnl);
+                    topPos += pnl.Height;
                 }
             }
+
+            // Formの高さを縮める
+            tabControl1.Height = topPos + 30;
+            this.Height = topPos + 105;
 
             tabControl1.SelectedIndex = 0;
         }
 
-        private void ClipSupporterForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            SaveProperty();
-        }
-
-        private void ClipSupporterForm_FormClosed(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
         private void ClipSupporterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            notifyIcon1.Dispose();
+            notifyIcon.Dispose();
             SaveProperty();
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            //this.Location = new Point(0, 0);
+            //this.Show();
+            this.Activate();
+        }
+
+        private void StripMenuPositionReset_Click(object sender, EventArgs e)
+        {
+            this.Location = new Point(0, 0);
+            this.Activate();
+        }
+
+        private void StripMenuVersionInfo_Click(object sender, EventArgs e)
+        {
+            using (VerInfoDialog dialog = new VerInfoDialog())
+            {
+                dialog.ShowDialog();
+            }
+        }
+
+        private void StripMenuEnd_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

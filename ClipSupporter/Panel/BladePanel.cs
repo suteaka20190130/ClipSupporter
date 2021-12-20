@@ -13,9 +13,15 @@ namespace ClipSupporter
 {
     public partial class BladePanel : UserControl
     {
+        //private readonly int AreaLeft = 3;
+        //private readonly int AreaTop = 15;
+
+
         public object MainInstance { get; set; }
 
         public string PanelBasePath { get; set; }
+
+        public Timer MainTimer = null;
 
         public BladePanel()
         {

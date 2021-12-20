@@ -13,7 +13,7 @@ namespace ClipSupporter.Panel
         /// </summary>
         public string TitleName { get; set; }
 
-        public string PanelBasePath { get; set; }
+        //public string PanelBasePath { get; set; }
 
         /// <summary>
         /// Constructor
@@ -28,6 +28,11 @@ namespace ClipSupporter.Panel
         public PanelConfig(string titleName)
         {
             TitleName = titleName;
+        }
+
+        public void CreatePosition()
+        {
+
         }
     }
 }

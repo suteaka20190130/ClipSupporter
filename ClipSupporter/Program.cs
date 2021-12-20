@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CommonLibrary.Limited;
 
 namespace ClipSupporter
 {
@@ -15,7 +16,7 @@ namespace ClipSupporter
         static void Main()
         {
             //Mutex名を決める ■■■ 必ずアプリケーション固有の文字列に変更すること！ ■■■
-            string mutexName = "ClipSupporterISEC";
+            string mutexName = "ClipSupporterI5EC";
             //Mutexオブジェクトを作成する
             bool createdNew;
             System.Threading.Mutex mutex = new System.Threading.Mutex(true, mutexName, out createdNew);
@@ -29,6 +30,16 @@ namespace ClipSupporter
                 return;
             }
 
+            LimitedState MyLimitedState = LicenseLimited.CanUsed();
+            if (MyLimitedState == LimitedState.Warning)
+            {
+                MessageBox.Show($"主がログアウトしました。本ツールの使用期限は({LicenseLimited.LimitedUseDate.ToShortDateString()})までとなります。");
+            }
+            else if (MyLimitedState == LimitedState.Limited)
+            {
+                MessageBox.Show($"使用期限日({LicenseLimited.LimitedUseDate.ToShortDateString()})を越えましたので使用不可となります。すみません・・・");
+                return;
+            }
 
             try
             {

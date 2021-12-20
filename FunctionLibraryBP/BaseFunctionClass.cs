@@ -10,13 +10,15 @@ namespace FunctionLibraryBP
 {
     public abstract class BaseFunctionClass
     {
-        public string BasePath { get; set; }
+        public string TemporaryPath { get; set; }
+        public string ConfigPath { get; set; }
 
         public abstract void ShowDegugInfo(object sender, EventArgs e);
 
-        public BaseFunctionClass(string panelName)
+        public BaseFunctionClass(string instanceClassName, string panelName)
         {
-            BasePath = Path.Combine(ShareCompornent.ApplicationBasePath, panelName);
+            TemporaryPath = Path.Combine(ShareCompornent.TemplateBasePath, panelName);
+            ConfigPath = Path.Combine(ShareCompornent.ConfigBasePath, instanceClassName);
         }
     }
 }

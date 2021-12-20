@@ -11,6 +11,13 @@ namespace ClipSupporter.Config
     {
         public string ControlName { get; set; }
 
+        public List<string> Tags { get; set; }
+
+        public ControlConfigElement()
+        {
+            Tags = new List<string>();
+        }
+
         /// <summary>
         /// コントロールのクラス名
         /// Blankの場合はSkipする
@@ -61,50 +68,28 @@ namespace ClipSupporter.Config
         }
 
         /// <summary>
-        /// コントロールのXサイズ
+        /// コントロールのToolTip
         /// </summary>
-        [ConfigurationProperty("XSize", DefaultValue = 1, IsRequired = true)]
-        public int XSize
+        [ConfigurationProperty("ToolTip", DefaultValue = "", IsRequired = false)]
+        public string ToolTip
         {
             get
             {
-                return (int)this["XSize"];
+                return (string)this["ToolTip"];
             }
             set
             {
-                this["XSize"] = value;
+                this["ToolTip"] = value;
             }
         }
 
-        /// <summary>
-        /// コントロールのYサイズ
-        /// </summary>
-        [ConfigurationProperty("YSize", DefaultValue = 1, IsRequired = true)]
-        public int YSize
+        [ConfigurationProperty("Properties")]
+        [ConfigurationCollection(typeof(PropertyConfigElementCollection), AddItemName = "Property")]
+        public PropertyConfigElementCollection MyProperties
         {
             get
-            {
-                return (int)this["YSize"];
-            }
-            set
-            {
-                this["YSize"] = value;
-            }
-        }
-
-        /// <summary>
-        /// コントロールの表示名
-        /// </summary>
-        [ConfigurationProperty("Text", DefaultValue = "Text", IsRequired = true)]
-        public string Text
-        {
-            get
-            {
-                return (string)this["Text"];
-            }
-            set
-            {
-                this["Text"] = value;
+            { 
+                return base["Properties"] as PropertyConfigElementCollection; 
             }
         }
     }
