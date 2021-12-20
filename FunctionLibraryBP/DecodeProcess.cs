@@ -37,12 +37,28 @@ namespace FunctionLibraryBP
                 // Tags定義なし
                 return;
             }
-            
 
             string inputData = Clipboard.GetText();
-
+            if (String.IsNullOrEmpty(inputData))
+            {
+                return;
+            }
+            
             Clipboard.Clear();
             Clipboard.SetText(inputData.Replace(tags[0], tags[1]));
+        }
+
+        public void CopyText(object sender, EventArgs e)
+        {
+            if (!GetTags(sender, out List<string> tags))
+            {
+                // Tags定義なし
+                return;
+            }
+
+
+            Clipboard.Clear();
+            Clipboard.SetText(tags[0]);
         }
 
         public override void ShowDegugInfo(object sender, EventArgs e)
