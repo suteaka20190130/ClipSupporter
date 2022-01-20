@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,6 +29,14 @@ namespace FunctionLibraryBP
 
             Clipboard.Clear();
             Clipboard.SetText(WebUtility.UrlDecode(inputData));
+        }
+
+        public void XmlEscape(object sender, EventArgs e)
+        {
+            string inputData = Clipboard.GetText();
+
+            Clipboard.Clear();
+            Clipboard.SetText(SecurityElement.Escape(inputData));
         }
 
         public void ReplaceText(object sender, EventArgs e)

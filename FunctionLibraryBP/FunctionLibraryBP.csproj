@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="BaseFunction.cs" />
     <Compile Include="ClipSharing.cs" />
+    <Compile Include="LauncherProcess.cs" />
     <Compile Include="DecodeProcess.cs" />
     <Compile Include="CreateInsertSQL.cs" />
     <Compile Include="FileProcessing.cs" />

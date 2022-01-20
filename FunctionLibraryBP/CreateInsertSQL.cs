@@ -46,7 +46,7 @@ namespace FunctionLibraryBP
         public string TableNameDefPath { get; set; }
 
         public CreateInsertSQL(string panelName)
-            : base(nameof(DecodeProccess), panelName)
+            : base(nameof(CreateInsertSQL), panelName)
         {
             TableNameDefPath = Path.Combine(ConfigPath, DICTIONARY_FILE);
             DicTableNamDef = JsonManager.ReadJson<Dictionary<string, string>>(TableNameDefPath);
